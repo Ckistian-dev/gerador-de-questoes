@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Questões</title>
+    
+    <!-- Título Principal da Página -->
+    <title>Gerador de Questões com IA</title>
+
+    <!-- SEO e Metatags para Compartilhamento (Open Graph) -->
+    <meta name="description" content="Crie, estude e teste seus conhecimentos com questões de múltipla escolha geradas por inteligência artificial. Perfeito para estudantes, concurseiros e curiosos!">
+    <meta name="author" content="Ckistian Programando Soluções">
+
+    <!-- Tags para WhatsApp, Facebook, etc. (Open Graph) -->
+    <meta property="og:title" content="Gerador de Questões com IA - Ckistian Programando Soluções">
+    <meta property="og:description" content="Estude de forma inteligente! Crie questões sobre qualquer assunto com o poder da IA.">
+    <meta property="og:image" content="https://i.ibb.co/B2ZpSmV/Chat-GPT-Image-14-de-abr-de-2025-15-33-47.png">
+    <meta property="og:url" content="https://gerador-de-questoes-ckistian.vercel.app/"> 
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Ckistian Programando Soluções">
+
+    <!-- Tags para Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gerador de Questões com IA - Ckistian Programando Soluções">
+    <meta name="twitter:description" content="Estude de forma inteligente! Crie questões sobre qualquer assunto com o poder da IA.">
+    <meta name="twitter:image" content="https://i.ibb.co/B2ZpSmV/Chat-GPT-Image-14-de-abr-de-2025-15-33-47.png">
+
+    <!-- Fim das Metatags -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -35,7 +58,6 @@
 <body class="bg-custom-bg text-custom-text antialiased">
     <div id="app" class="container mx-auto p-4 sm:p-6 md:p-8 min-h-screen flex flex-col">
         <!-- Cabeçalho -->
-        <!-- Ajustes de tamanho de fonte e margem para mobile -->
         <header class="text-center mb-8 md:mb-10">
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-custom-accent tracking-tight">Gerador de Questões</h1>
             <p class="text-gray-400 mt-2 text-base md:text-lg max-w-2xl mx-auto">Crie e responda questões de múltipla escolha sobre qualquer assunto.</p>
@@ -89,7 +111,6 @@
                             </select>
                         </div>
                     </div>
-                    <!-- Ajuste no botão para ser full-width em mobile -->
                     <div class="flex items-center justify-center sm:justify-end pt-4">
                         <button type="submit" id="generate-btn"
                                 class="w-full sm:w-auto inline-flex items-center justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-custom-accent hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-custom-accent transition-all duration-200 transform active:scale-95 disabled:bg-opacity-50 disabled:cursor-not-allowed">
@@ -108,7 +129,6 @@
             <div id="feedback-container" class="hidden mt-4 text-center p-4 rounded-md"></div>
         </main>
         
-        <!-- Ajustes de margem e fonte no footer -->
         <footer class="text-center mt-10 md:mt-16 py-4 border-t border-custom-border">
             <div id="score-tracker" class="mb-2 text-base font-semibold text-gray-300">
                 Pontuação: <span id="correct-answers" class="text-custom-accent">0</span> / <span id="total-questions" class="text-custom-text">0</span>
@@ -236,7 +256,6 @@
                 quizContainer.innerHTML = ''; 
 
                 const questionElement = document.createElement('h2');
-                // Ajustado o tamanho da fonte da questão para mobile
                 questionElement.className = 'text-xl sm:text-2xl font-semibold mb-6 text-custom-text';
                 questionElement.textContent = quizData.question;
                 quizContainer.appendChild(questionElement);
@@ -258,7 +277,6 @@
 
                     const label = document.createElement('label');
                     label.htmlFor = optionId;
-                    // Ajustado o tamanho da fonte das opções
                     label.className = 'flex items-center w-full p-4 text-base border border-custom-border rounded-lg cursor-pointer hover:bg-custom-bg peer-checked:border-custom-accent peer-checked:ring-2 peer-checked:ring-custom-accent transition-all duration-200';
                     label.textContent = option;
                     
@@ -270,7 +288,6 @@
 
                 const actionsContainer = document.createElement('div');
                 actionsContainer.id = 'actions-container';
-                // Container do botão centralizado em mobile e à direita em telas maiores
                 actionsContainer.className = 'mt-8 flex justify-center sm:justify-end';
                 
                 const checkButton = document.createElement('button');
@@ -281,7 +298,6 @@
                     </svg>
                     <span>Conferir</span>
                 `;
-                // Botão com largura total no mobile
                 checkButton.className = 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-600 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-emerald-500 transition-all duration-200 transform active:scale-95';
                 checkButton.addEventListener('click', checkAnswer);
                 
@@ -321,7 +337,6 @@
             incrementTotal();
             
             const explanationContainer = document.createElement('div');
-            // Ajuste na fonte da explicação para mobile
             explanationContainer.className = 'fade-in mt-6 p-4 bg-custom-bg border-l-4 border-custom-accent text-gray-300 text-base rounded-r-lg w-full clear-both';
             explanationContainer.innerHTML = `<p class="font-bold mb-2 text-custom-accent">Resolução:</p><p>${currentQuizData.explanation}</p>`;
             quizContainer.appendChild(explanationContainer);
@@ -336,7 +351,6 @@
                 </svg>
                 <span>Gerar Nova Questão</span>
             `;
-            // Botão com largura total no mobile
             newButton.className = 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-custom-accent text-white font-semibold rounded-lg shadow-md hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-custom-accent transition-all duration-200 transform active:scale-95';
             newButton.addEventListener('click', resetForNewQuestion);
             
