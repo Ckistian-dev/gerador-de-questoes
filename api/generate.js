@@ -18,7 +18,7 @@ export default async function handler(request, response) {
         return response.status(400).json({ error: 'Missing required fields' });
     }
 
-    const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const prompt = `Gere UMA única questão de múltipla escolha sobre o assunto "${assunto}", dentro da matéria de "${materia}", no estilo de prova "${estilo}" e com nível de dificuldade "${dificuldade}". A resposta DEVE ser um objeto JSON válido, e NADA MAIS além do JSON. A estrutura do JSON deve ser exatamente a seguinte: { "question": "o enunciado completo da pergunta", "options": ["alternativa 1", "alternativa 2", "alternativa 3", "alternativa 4"], "answer": 0, "explanation": "uma explicação detalhada e clara da resposta correta." }. O campo "answer" deve ser o índice (de 0 a 3) da alternativa correta no array "options".`;
 
