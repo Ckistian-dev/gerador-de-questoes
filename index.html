@@ -1,0 +1,340 @@
+<!-- ... todo o conteúdo do <head> permanece o mesmo ... -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Questões com Gemini API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'custom-bg': '#0D0F16',
+                        'custom-card': '#1A1D29',
+                        'custom-accent': '#1CA5A5',
+                        'custom-accent-dark': '#168484',
+                        'custom-text': '#F1EFE9',
+                        'custom-border': '#33384F',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .fade-out { animation: fadeOut 0.5s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
+    </style>
+</head>
+<body class="bg-custom-bg text-custom-text antialiased">
+    <!-- ... todo o HTML do <body> (header, main, footer) permanece exatamente o mesmo ... -->
+    <div id="app" class="container mx-auto p-4 md:p-8 min-h-screen flex flex-col">
+        <!-- Cabeçalho -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-custom-accent tracking-tight">Gerador de Questões Gemini</h1>
+            <p class="text-gray-400 mt-2 text-lg">Crie e responda questões de múltipla escolha sobre qualquer assunto.</p>
+        </header>
+
+        <main class="flex-grow w-full max-w-3xl mx-auto">
+            <!-- Seção do Formulário Gerador -->
+            <section id="generator-form-container" class="bg-custom-card p-6 sm:p-8 rounded-2xl shadow-lg border border-custom-border transition-all duration-500">
+                <form id="quiz-generator-form" class="space-y-6">
+                    <div>
+                        <label for="assunto" class="block text-sm font-medium text-gray-300 mb-1">Assunto</label>
+                        <input type="text" id="assunto" name="assunto" required
+                               class="mt-1 block w-full px-4 py-3 bg-custom-bg border border-custom-border rounded-md shadow-sm placeholder-gray-500 text-custom-text focus:outline-none focus:ring-2 focus:ring-custom-accent focus:border-custom-accent transition duration-150 ease-in-out"
+                               placeholder="Ex: Revolução Francesa, Fotossíntese...">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label for="materia" class="block text-sm font-medium text-gray-300">Matéria</label>
+                            <select id="materia" name="materia"
+                                    class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-custom-border bg-custom-bg text-custom-text focus:outline-none focus:ring-custom-accent focus:border-custom-accent sm:text-sm rounded-md transition duration-150 ease-in-out">
+                                <option>História</option>
+                                <option>Geografia</option>
+                                <option>Ciências</option>
+                                <option>Biologia</option>
+                                <option>Química</option>
+                                <option>Física</option>
+                                <option>Matemática</option>
+                                <option>Português</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="estilo" class="block text-sm font-medium text-gray-300">Estilo</label>
+                            <select id="estilo" name="estilo"
+                                    class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-custom-border bg-custom-bg text-custom-text focus:outline-none focus:ring-custom-accent focus:border-custom-accent sm:text-sm rounded-md transition duration-150 ease-in-out">
+                                <option>ENEM</option>
+                                <option>Vestibular</option>
+                                <option>Concurso Público</option>
+                                <option>Conhecimentos Gerais</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="dificuldade" class="block text-sm font-medium text-gray-300">Dificuldade</label>
+                            <select id="dificuldade" name="dificuldade"
+                                    class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-custom-border bg-custom-bg text-custom-text focus:outline-none focus:ring-custom-accent focus:border-custom-accent sm:text-sm rounded-md transition duration-150 ease-in-out">
+                                <option>Fácil</option>
+                                <option>Média</option>
+                                <option>Difícil</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end pt-4">
+                        <button type="submit" id="generate-btn"
+                                class="inline-flex items-center justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-custom-accent hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-custom-accent transition-all duration-200 transform active:scale-95 disabled:bg-opacity-50 disabled:cursor-not-allowed">
+                            <svg id="loading-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span id="btn-text">Gerar Questão</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+            
+            <section id="quiz-container" class="hidden mt-8 bg-custom-card p-6 sm:p-8 rounded-2xl shadow-lg border border-custom-border"></section>
+            
+            <div id="feedback-container" class="hidden mt-4 text-center p-4 rounded-md"></div>
+        </main>
+
+        <footer class="text-center mt-12 py-4 border-t border-custom-border">
+            <div id="score-tracker" class="mb-2 text-lg font-semibold text-gray-300">
+                Pontuação: <span id="correct-answers" class="text-custom-accent">0</span> / <span id="total-questions" class="text-custom-text">0</span>
+            </div>
+            <p class="text-gray-400">
+                Desenvolvido por Ckistian Programando Soluções - 
+                <a href="https://ckistian-programando-solucoes.vercel.app" target="_blank" rel="noopener noreferrer" class="text-custom-accent hover:underline">
+                    Visite o site
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // --- INÍCIO DA LÓGICA DA APLICAÇÃO ---
+        
+        // Removi a API_KEY daqui, agora é seguro!
+        const API_ENDPOINT = '/api/generate'; // Aponta para nossa função de backend
+
+        // ... todo o resto do seu JavaScript permanece o mesmo, exceto a função de submit ...
+
+        const form = document.getElementById('quiz-generator-form');
+        const generateBtn = document.getElementById('generate-btn');
+        const btnText = document.getElementById('btn-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const formContainer = document.getElementById('generator-form-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+
+        let currentQuizData = null;
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+
+        function loadScore() {
+            const savedCorrect = localStorage.getItem('geminiQuizCorrectAnswers');
+            const savedTotal = localStorage.getItem('geminiQuizTotalQuestions');
+            correctAnswers = savedCorrect ? parseInt(savedCorrect, 10) : 0;
+            totalQuestions = savedTotal ? parseInt(savedTotal, 10) : 0;
+            updateScoreDisplay();
+        }
+
+        function saveScore() {
+            localStorage.setItem('geminiQuizCorrectAnswers', correctAnswers.toString());
+            localStorage.setItem('geminiQuizTotalQuestions', totalQuestions.toString());
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('correct-answers').textContent = correctAnswers;
+            document.getElementById('total-questions').textContent = totalQuestions;
+        }
+
+        function incrementScore() {
+            correctAnswers++;
+        }
+
+        function incrementTotal() {
+            totalQuestions++;
+            saveScore();
+            updateScoreDisplay();
+        }
+
+        function showLoadingState(isLoading) {
+            generateBtn.disabled = isLoading;
+            loadingSpinner.classList.toggle('hidden', !isLoading);
+            btnText.textContent = isLoading ? 'Gerando...' : 'Gerar Questão';
+        }
+        
+        function showFeedback(message, isError = true) {
+            feedbackContainer.textContent = message;
+            feedbackContainer.className = `mt-4 text-center p-4 rounded-md fade-in ${isError ? 'bg-red-900/50 text-red-300 border border-red-500/50' : 'bg-blue-900/50 text-blue-300 border border-blue-500/50'}`;
+            feedbackContainer.classList.remove('hidden');
+        }
+        
+        function hideFeedback() {
+             feedbackContainer.classList.add('hidden');
+        }
+        
+        function isValidQuizData(data) {
+            return data && typeof data.question === 'string' && Array.isArray(data.options) && data.options.length > 0 && typeof data.answer === 'number' && data.answer >= 0 && data.answer < data.options.length && typeof data.explanation === 'string';
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            hideFeedback();
+            showLoadingState(true);
+
+            const formData = new FormData(form);
+            const promptDetails = {
+                assunto: formData.get('assunto'),
+                materia: formData.get('materia'),
+                estilo: formData.get('estilo'),
+                dificuldade: formData.get('dificuldade'),
+            };
+            
+            try {
+                // A chamada agora é para a nossa própria API
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(promptDetails)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || `Erro no servidor: ${response.status}`);
+                }
+
+                if (isValidQuizData(result)) {
+                    currentQuizData = result;
+                    displayQuestion(result);
+                } else {
+                    throw new Error("Os dados recebidos do servidor estão incompletos ou malformatados.");
+                }
+
+            } catch (error) {
+                console.error("Falha ao gerar questão:", error);
+                showFeedback(error.message || "Ocorreu um erro desconhecido.");
+            } finally {
+                showLoadingState(false);
+            }
+        });
+
+        // ... o restante das funções (displayQuestion, checkAnswer, etc.) permanece o mesmo ...
+        function displayQuestion(quizData) {
+            formContainer.classList.add('fade-out');
+            
+            setTimeout(() => {
+                formContainer.classList.add('hidden');
+                quizContainer.innerHTML = ''; 
+
+                const questionElement = document.createElement('h2');
+                questionElement.className = 'text-2xl font-semibold mb-6 text-custom-text';
+                questionElement.textContent = quizData.question;
+                quizContainer.appendChild(questionElement);
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.id = 'options-container';
+                optionsContainer.className = 'space-y-4';
+
+                quizData.options.forEach((option, index) => {
+                    const optionId = `option-${index}`;
+                    const wrapper = document.createElement('div');
+                    
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.id = optionId;
+                    radioInput.name = 'answer';
+                    radioInput.value = index;
+                    radioInput.className = 'hidden peer';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = optionId;
+                    label.className = 'flex items-center w-full p-4 border border-custom-border rounded-lg cursor-pointer hover:bg-custom-bg peer-checked:border-custom-accent peer-checked:ring-2 peer-checked:ring-custom-accent transition-all duration-200';
+                    label.textContent = option;
+                    
+                    wrapper.appendChild(radioInput);
+                    wrapper.appendChild(label);
+                    optionsContainer.appendChild(wrapper);
+                });
+                quizContainer.appendChild(optionsContainer);
+
+                const checkButton = document.createElement('button');
+                checkButton.id = 'check-btn';
+                checkButton.textContent = 'Conferir';
+                checkButton.className = 'mt-8 w-full sm:w-auto float-right py-3 px-8 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-transform transform active:scale-95';
+                checkButton.addEventListener('click', checkAnswer);
+                quizContainer.appendChild(checkButton);
+
+                quizContainer.classList.remove('hidden', 'fade-out');
+                quizContainer.classList.add('fade-in');
+            }, 500);
+        }
+
+        function checkAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (!selectedOption) {
+                showFeedback("Por favor, selecione uma resposta.", false);
+                return;
+            }
+            hideFeedback();
+
+            const userAnswerIndex = parseInt(selectedOption.value, 10);
+            const correctAnswerIndex = currentQuizData.answer;
+
+            document.querySelectorAll('input[name="answer"]').forEach(input => input.disabled = true);
+            
+            document.querySelectorAll('#options-container label').forEach((label, index) => {
+                label.classList.remove('hover:bg-custom-bg', 'cursor-pointer');
+                if (index === correctAnswerIndex) {
+                    label.classList.add('bg-green-900/50', 'border-green-500', 'ring-2', 'ring-green-500');
+                } else if (index === userAnswerIndex) {
+                     label.classList.add('bg-red-900/50', 'border-red-500', 'ring-2', 'ring-red-500');
+                }
+            });
+
+            if (userAnswerIndex === correctAnswerIndex) {
+                incrementScore();
+            }
+            incrementTotal();
+            
+            const explanationContainer = document.createElement('div');
+            explanationContainer.className = 'fade-in mt-6 p-4 bg-custom-bg border-l-4 border-custom-accent text-gray-300 rounded-r-lg w-full clear-both';
+            explanationContainer.innerHTML = `<p class="font-bold mb-2 text-custom-accent">Resolução:</p><p>${currentQuizData.explanation}</p>`;
+            quizContainer.appendChild(explanationContainer);
+
+            const oldButton = document.getElementById('check-btn');
+            const newButton = oldButton.cloneNode(true);
+            newButton.textContent = 'Gerar Nova Questão';
+            newButton.className = 'mt-8 w-full sm:w-auto float-right py-3 px-8 bg-custom-accent text-white font-semibold rounded-lg shadow-md hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-custom-accent/50 transition-transform transform active:scale-95';
+            newButton.addEventListener('click', resetForNewQuestion);
+            oldButton.parentNode.replaceChild(newButton, oldButton);
+        }
+        
+        function resetForNewQuestion() {
+            quizContainer.classList.add('fade-out');
+            setTimeout(() => {
+                quizContainer.classList.add('hidden');
+                formContainer.classList.remove('hidden', 'fade-out');
+                formContainer.classList.add('fade-in');
+                document.getElementById('assunto').focus();
+            }, 500);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadScore);
+    </script>
+</body>
+</html>
+
