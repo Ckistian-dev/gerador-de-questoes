@@ -1,4 +1,3 @@
-<!-- ... todo o conteúdo do <head> permanece o mesmo ... -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -34,12 +33,12 @@
     </style>
 </head>
 <body class="bg-custom-bg text-custom-text antialiased">
-    <!-- ... todo o HTML do <body> (header, main, footer) permanece exatamente o mesmo ... -->
-    <div id="app" class="container mx-auto p-4 md:p-8 min-h-screen flex flex-col">
+    <div id="app" class="container mx-auto p-4 sm:p-6 md:p-8 min-h-screen flex flex-col">
         <!-- Cabeçalho -->
-        <header class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-bold text-custom-accent tracking-tight">Gerador de Questões</h1>
-            <p class="text-gray-400 mt-2 text-lg">Crie e responda questões de múltipla escolha sobre qualquer assunto.</p>
+        <!-- Ajustes de tamanho de fonte e margem para mobile -->
+        <header class="text-center mb-8 md:mb-10">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-custom-accent tracking-tight">Gerador de Questões</h1>
+            <p class="text-gray-400 mt-2 text-base md:text-lg max-w-2xl mx-auto">Crie e responda questões de múltipla escolha sobre qualquer assunto.</p>
         </header>
 
         <main class="flex-grow w-full max-w-3xl mx-auto">
@@ -49,11 +48,11 @@
                     <div>
                         <label for="assunto" class="block text-sm font-medium text-gray-300 mb-1">Assunto</label>
                         <input type="text" id="assunto" name="assunto" required
-                               class="mt-1 block w-full px-4 py-3 bg-custom-bg border border-custom-border rounded-md shadow-sm placeholder-gray-500 text-custom-text focus:outline-none focus:ring-2 focus:ring-custom-accent focus:border-custom-accent transition duration-150 ease-in-out"
-                               placeholder="Ex: Revolução Francesa, Fotossíntese...">
+                               class="mt-1 block w-full px-4 py-3 bg-custom-bg border border-custom-border rounded-md shadow-sm placeholder-gray-500 text-custom-text focus:outline-none focus:ring-2 focus:ring-custom-accent focus:border-custom-accent transition duration-150 ease-in-out text-base"
+                               placeholder="Ex: Revolução Francesa...">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                         <div>
                             <label for="materia" class="block text-sm font-medium text-gray-300">Matéria</label>
                             <select id="materia" name="materia"
@@ -90,10 +89,10 @@
                             </select>
                         </div>
                     </div>
-
-                    <div class="flex items-center justify-end pt-4">
+                    <!-- Ajuste no botão para ser full-width em mobile -->
+                    <div class="flex items-center justify-center sm:justify-end pt-4">
                         <button type="submit" id="generate-btn"
-                                class="inline-flex items-center justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-custom-accent hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-custom-accent transition-all duration-200 transform active:scale-95 disabled:bg-opacity-50 disabled:cursor-not-allowed">
+                                class="w-full sm:w-auto inline-flex items-center justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-custom-accent hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-custom-accent transition-all duration-200 transform active:scale-95 disabled:bg-opacity-50 disabled:cursor-not-allowed">
                             <svg id="loading-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -108,12 +107,13 @@
             
             <div id="feedback-container" class="hidden mt-4 text-center p-4 rounded-md"></div>
         </main>
-
-        <footer class="text-center mt-12 py-4 border-t border-custom-border">
-            <div id="score-tracker" class="mb-2 text-lg font-semibold text-gray-300">
+        
+        <!-- Ajustes de margem e fonte no footer -->
+        <footer class="text-center mt-10 md:mt-16 py-4 border-t border-custom-border">
+            <div id="score-tracker" class="mb-2 text-base font-semibold text-gray-300">
                 Pontuação: <span id="correct-answers" class="text-custom-accent">0</span> / <span id="total-questions" class="text-custom-text">0</span>
             </div>
-            <p class="text-gray-400">
+            <p class="text-sm text-gray-400">
                 Desenvolvido por Ckistian Programando Soluções - 
                 <a href="https://ckistian-programando-solucoes.vercel.app" target="_blank" rel="noopener noreferrer" class="text-custom-accent hover:underline">
                     Visite o site
@@ -125,10 +125,7 @@
     <script>
         // --- INÍCIO DA LÓGICA DA APLICAÇÃO ---
         
-        // Removi a API_KEY daqui, agora é seguro!
-        const API_ENDPOINT = '/api/generate'; // Aponta para nossa função de backend
-
-        // ... todo o resto do seu JavaScript permanece o mesmo, exceto a função de submit ...
+        const API_ENDPOINT = '/api/generate'; 
 
         const form = document.getElementById('quiz-generator-form');
         const generateBtn = document.getElementById('generate-btn');
@@ -204,7 +201,6 @@
             };
             
             try {
-                // A chamada agora é para a nossa própria API
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -232,7 +228,6 @@
             }
         });
 
-        // ... o restante das funções (displayQuestion, checkAnswer, etc.) permanece o mesmo ...
         function displayQuestion(quizData) {
             formContainer.classList.add('fade-out');
             
@@ -241,7 +236,8 @@
                 quizContainer.innerHTML = ''; 
 
                 const questionElement = document.createElement('h2');
-                questionElement.className = 'text-2xl font-semibold mb-6 text-custom-text';
+                // Ajustado o tamanho da fonte da questão para mobile
+                questionElement.className = 'text-xl sm:text-2xl font-semibold mb-6 text-custom-text';
                 questionElement.textContent = quizData.question;
                 quizContainer.appendChild(questionElement);
 
@@ -262,7 +258,8 @@
 
                     const label = document.createElement('label');
                     label.htmlFor = optionId;
-                    label.className = 'flex items-center w-full p-4 border border-custom-border rounded-lg cursor-pointer hover:bg-custom-bg peer-checked:border-custom-accent peer-checked:ring-2 peer-checked:ring-custom-accent transition-all duration-200';
+                    // Ajustado o tamanho da fonte das opções
+                    label.className = 'flex items-center w-full p-4 text-base border border-custom-border rounded-lg cursor-pointer hover:bg-custom-bg peer-checked:border-custom-accent peer-checked:ring-2 peer-checked:ring-custom-accent transition-all duration-200';
                     label.textContent = option;
                     
                     wrapper.appendChild(radioInput);
@@ -271,12 +268,25 @@
                 });
                 quizContainer.appendChild(optionsContainer);
 
+                const actionsContainer = document.createElement('div');
+                actionsContainer.id = 'actions-container';
+                // Container do botão centralizado em mobile e à direita em telas maiores
+                actionsContainer.className = 'mt-8 flex justify-center sm:justify-end';
+                
                 const checkButton = document.createElement('button');
                 checkButton.id = 'check-btn';
-                checkButton.textContent = 'Conferir';
-                checkButton.className = 'mt-8 w-full sm:w-auto float-right py-3 px-8 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-transform transform active:scale-95';
+                checkButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Conferir</span>
+                `;
+                // Botão com largura total no mobile
+                checkButton.className = 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-600 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-emerald-500 transition-all duration-200 transform active:scale-95';
                 checkButton.addEventListener('click', checkAnswer);
-                quizContainer.appendChild(checkButton);
+                
+                actionsContainer.appendChild(checkButton);
+                quizContainer.appendChild(actionsContainer);
 
                 quizContainer.classList.remove('hidden', 'fade-out');
                 quizContainer.classList.add('fade-in');
@@ -311,16 +321,26 @@
             incrementTotal();
             
             const explanationContainer = document.createElement('div');
-            explanationContainer.className = 'fade-in mt-6 p-4 bg-custom-bg border-l-4 border-custom-accent text-gray-300 rounded-r-lg w-full clear-both';
+            // Ajuste na fonte da explicação para mobile
+            explanationContainer.className = 'fade-in mt-6 p-4 bg-custom-bg border-l-4 border-custom-accent text-gray-300 text-base rounded-r-lg w-full clear-both';
             explanationContainer.innerHTML = `<p class="font-bold mb-2 text-custom-accent">Resolução:</p><p>${currentQuizData.explanation}</p>`;
             quizContainer.appendChild(explanationContainer);
 
-            const oldButton = document.getElementById('check-btn');
-            const newButton = oldButton.cloneNode(true);
-            newButton.textContent = 'Gerar Nova Questão';
-            newButton.className = 'mt-8 w-full sm:w-auto float-right py-3 px-8 bg-custom-accent text-white font-semibold rounded-lg shadow-md hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-custom-accent/50 transition-transform transform active:scale-95';
+            const actionsContainer = document.getElementById('actions-container');
+            actionsContainer.innerHTML = ''; 
+
+            const newButton = document.createElement('button');
+            newButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                <span>Gerar Nova Questão</span>
+            `;
+            // Botão com largura total no mobile
+            newButton.className = 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-custom-accent text-white font-semibold rounded-lg shadow-md hover:bg-custom-accent-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-custom-card focus:ring-custom-accent transition-all duration-200 transform active:scale-95';
             newButton.addEventListener('click', resetForNewQuestion);
-            oldButton.parentNode.replaceChild(newButton, oldButton);
+            
+            actionsContainer.appendChild(newButton);
         }
         
         function resetForNewQuestion() {
