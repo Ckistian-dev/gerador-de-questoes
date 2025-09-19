@@ -258,7 +258,7 @@
                 const questionElement = document.createElement('h2');
                 // --- MUDANÇA AQUI ---
                 // Fonte um pouco menor no mobile (text-lg) e justificada (text-justify)
-                questionElement.className = 'text-lg sm:text-xl font-semibold mb-6 text-custom-text text-justify';
+                questionElement.className = 'text-lg sm:text-xl font-semibold mb-6 text-custom-text';
                 questionElement.textContent = quizData.question;
                 quizContainer.appendChild(questionElement);
 
@@ -340,7 +340,7 @@
             
             const explanationContainer = document.createElement('div');
             explanationContainer.className = 'fade-in mt-6 p-4 bg-custom-bg border-l-4 border-custom-accent text-gray-300 text-base rounded-r-lg w-full clear-both';
-            explanationContainer.innerHTML = `<p class="font-bold mb-2 text-custom-accent text-justify">Resolução:</p><p>${currentQuizData.explanation}</p>`;
+            explanationContainer.innerHTML = `<p class="font-bold mb-2 text-custom-accent">Resolução:</p><p>${currentQuizData.explanation}</p>`;
             quizContainer.appendChild(explanationContainer);
 
             const actionsContainer = document.getElementById('actions-container');
