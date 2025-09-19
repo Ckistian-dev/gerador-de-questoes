@@ -14,7 +14,7 @@
     <!-- Tags para WhatsApp, Facebook, etc. (Open Graph) -->
     <meta property="og:title" content="Gerador de Questões com IA - Ckistian Programando Soluções">
     <meta property="og:description" content="Estude de forma inteligente! Crie questões sobre qualquer assunto com o poder da IA.">
-    <meta property="og:image" content="https://i.ibb.co/B2ZpwSmV/Chat-GPT-Image-14-de-abr-de-2025-15-33-47.png">
+    <meta property="og:image" content="https://i.ibb.co/B2ZpSmV/Chat-GPT-Image-14-de-abr-de-2025-15-33-47.png">
     <meta property="og:url" content="https://gerador-de-questoes-ckistian.vercel.app/"> 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Ckistian Programando Soluções">
@@ -256,7 +256,9 @@
                 quizContainer.innerHTML = ''; 
 
                 const questionElement = document.createElement('h2');
-                questionElement.className = 'text-xl sm:text-2xl font-semibold mb-6 text-custom-text';
+                // --- MUDANÇA AQUI ---
+                // Fonte um pouco menor no mobile (text-lg) e justificada (text-justify)
+                questionElement.className = 'text-lg sm:text-xl font-semibold mb-6 text-custom-text text-justify';
                 questionElement.textContent = quizData.question;
                 quizContainer.appendChild(questionElement);
 
